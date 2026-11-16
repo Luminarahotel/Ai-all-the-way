@@ -1,0 +1,744 @@
+/* Fonts: exactly two, self-hosted, font-display swap. Preloaded from index.html. */
+@font-face {
+  font-family: 'Instrument Serif';
+  src: url('/fonts/InstrumentSerif-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Hanken Grotesk';
+  src: url('/fonts/HankenGrotesk-Variable.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Palette: exactly six tokens. Nothing else is used for colour. */
+:root {
+  --ink: #07080c;
+  --deep: #0e1220;
+  --mist: #aab4d4;
+  --bone: #f2efe9;
+  --accent: #8fa8ff;
+  --warm: #ffc48a;
+
+  /* easing vocabulary (CSS equivalents of the GSAP names) */
+  --e-power4-out: cubic-bezier(0.165, 0.84, 0.44, 1);
+  --e-expo-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --e-power3-inout: cubic-bezier(0.645, 0.045, 0.355, 1);
+
+  --serif: 'Instrument Serif', Georgia, 'Times New Roman', serif;
+  --sans: 'Hanken Grotesk', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --pad: clamp(20px, 5vw, 72px);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+html {
+  background: var(--ink);
+  color: var(--mist);
+  scroll-behavior: auto;
+  -webkit-text-size-adjust: 100%;
+}
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-stopped {
+  overflow: clip;
+}
+body {
+  margin: 0;
+  font-family: var(--sans);
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  background: var(--ink);
+  color: var(--mist);
+  overflow-x: clip;
+}
+h1,
+h2,
+h3 {
+  margin: 0;
+  font-weight: 400;
+  color: var(--bone);
+}
+h1,
+h2,
+.big,
+.footer-mark {
+  font-family: var(--serif);
+  line-height: 1.02;
+  letter-spacing: -0.01em;
+}
+h3 {
+  font-family: var(--sans);
+  font-weight: 600;
+  font-size: 1rem;
+  letter-spacing: 0.01em;
+}
+p {
+  margin: 0 0 1em;
+}
+a {
+  color: var(--bone);
+}
+.fine {
+  font-size: 0.875rem;
+  color: var(--mist);
+}
+
+/* visible focus, always */
+:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.skip {
+  position: fixed;
+  left: 12px;
+  top: -80px;
+  z-index: 100;
+  background: var(--bone);
+  color: var(--ink);
+  padding: 10px 16px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: top 0.3s var(--e-power4-out);
+}
+.skip:focus {
+  top: 12px;
+}
+
+/* header */
+.site-header {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 50;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px var(--pad);
+  pointer-events: none;
+}
+.site-header > * {
+  pointer-events: auto;
+}
+.wordmark {
+  font-family: var(--serif);
+  font-size: 1.35rem;
+  letter-spacing: 0.14em;
+  text-decoration: none;
+  color: var(--bone);
+}
+
+/* buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5em;
+  padding: 14px 28px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--bone);
+  color: var(--ink);
+  font: 600 1rem/1 var(--sans);
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform 0.5s var(--e-expo-out), background 0.3s var(--e-power4-out);
+  will-change: transform;
+}
+.btn:hover {
+  background: var(--warm);
+}
+.btn:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+.btn--small {
+  padding: 10px 20px;
+  font-size: 0.9rem;
+}
+.btn--ghost {
+  background: transparent;
+  color: var(--bone);
+  box-shadow: inset 0 0 0 1.5px var(--mist);
+}
+.btn--ghost:hover {
+  background: var(--deep);
+}
+
+/* fixed layers behind the DOM */
+.poster,
+.gl {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+.gl canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+  pointer-events: none;
+}
+.poster {
+  display: grid;
+  place-items: center;
+  transition: opacity 1s var(--e-power4-out);
+}
+.poster.is-hidden {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 1s var(--e-power4-out), visibility 0s 1s;
+}
+.poster svg {
+  width: min(78vmin, 640px);
+  height: auto;
+  margin-left: 40vw;
+  margin-top: -6vh;
+}
+.poster.is-parallax svg {
+  transform: translate3d(0, calc(var(--sy, 0) * -0.06px), 0);
+}
+main,
+.footer {
+  position: relative;
+  z-index: 2;
+}
+
+/* sections: every one is composed differently */
+.sec {
+  position: relative;
+}
+.stage {
+  padding: clamp(88px, 12vh, 140px) var(--pad) clamp(28px, 6vh, 64px);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  min-height: 100svh;
+}
+[data-rise],
+.panel {
+  will-change: transform, opacity;
+}
+.panel {
+  background: color-mix(in srgb, var(--ink) 72%, transparent);
+  padding: clamp(16px, 2.4vw, 32px);
+  border-radius: 20px;
+  backdrop-filter: blur(6px);
+}
+
+/* pinned (sticky, scrubbed) layout exists only when a 3D tier is active */
+html[data-pin] .pin {
+  height: var(--h, 200vh);
+}
+html[data-pin] .pin > .stage {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* 1 HERO: bottom-left, huge serif; ring sits right */
+.hero .stage {
+  align-items: flex-start;
+}
+.eyebrow {
+  font-size: 0.8125rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--mist);
+}
+.hero-title {
+  font-size: clamp(3rem, 9vw, 8.5rem);
+  max-width: 9.5em;
+  margin-bottom: 0.3em;
+}
+.w {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+  padding-bottom: 0.14em;
+  margin-bottom: -0.14em;
+}
+.w > span {
+  display: inline-block;
+  animation: up 0.9s var(--e-power4-out) both;
+  animation-delay: calc(var(--i) * 0.08s + 0.05s);
+}
+@keyframes up {
+  from {
+    transform: translateY(105%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+.lede {
+  max-width: 34ch;
+  font-size: 1.15rem;
+  color: var(--mist);
+}
+.hero .btn {
+  margin-top: 0.4em;
+}
+
+/* 2 PROBLEM: four huge lines, left, wide leading */
+.problem .stage {
+  justify-content: center;
+}
+.problem-lines {
+  max-width: min(58vw, 22em);
+}
+.big {
+  font-size: clamp(2rem, 5.2vw, 5rem);
+  color: var(--bone);
+  margin: 0 0 0.3em;
+}
+.big:nth-child(even) {
+  color: var(--mist);
+}
+
+/* 3 ANATOMY: centred heading, labels in side columns, ring in the middle */
+.a-head {
+  position: absolute;
+  top: clamp(72px, 10vh, 110px);
+  left: 0;
+  right: 0;
+  text-align: center;
+  padding: 0 var(--pad);
+}
+.a-head h2 {
+  font-size: clamp(1.7rem, 3.6vw, 3.2rem);
+}
+.a-intro {
+  margin: 0.4em auto 0;
+  max-width: 44ch;
+  font-size: 0.95rem;
+}
+.labels {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.label {
+  background: color-mix(in srgb, var(--ink) 78%, transparent);
+  border-left: 2px solid var(--accent);
+  padding: 10px 14px;
+  font-size: 0.875rem;
+  line-height: 1.45;
+}
+.label h3 {
+  color: var(--bone);
+  margin-bottom: 0.2em;
+}
+.label p {
+  margin: 0;
+  color: var(--mist);
+}
+html[data-pin] .label {
+  position: absolute;
+  left: 0;
+  top: 0;
+  will-change: transform, opacity;
+}
+html:not([data-pin]) .labels {
+  display: grid;
+  gap: 16px;
+  margin-top: 28px;
+  max-width: 560px;
+}
+html:not([data-pin]) .a-head {
+  position: static;
+  text-align: left;
+  padding: 0;
+}
+html:not([data-pin]) .a-intro {
+  margin-left: 0;
+}
+.leaders {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+.leader {
+  fill: none;
+  stroke: var(--mist);
+  stroke-width: 1;
+  stroke-opacity: 0.8;
+}
+.leader-dot {
+  fill: var(--accent);
+}
+
+/* 4 SCIENCE: copy top-right, waveform across the middle, caption at the bottom */
+.science .stage {
+  justify-content: space-between;
+  align-items: flex-end;
+}
+.science-copy {
+  max-width: min(44ch, 100%);
+  text-align: left;
+}
+.science-copy h2 {
+  font-size: clamp(1.9rem, 3.6vw, 3.4rem);
+  margin-bottom: 0.4em;
+}
+.caption {
+  align-self: center;
+  font-size: 0.8125rem;
+  color: var(--mist);
+  background: color-mix(in srgb, var(--ink) 72%, transparent);
+  padding: 6px 12px;
+  border-radius: 999px;
+  margin: 0;
+}
+.stage-labels {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.stage-label {
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-size: 0.8125rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--bone);
+  opacity: 0;
+  will-change: transform, opacity;
+}
+.hypno {
+  margin: 28px 0;
+  width: 100%;
+  max-width: 760px;
+}
+.hypno svg {
+  width: 100%;
+  height: auto;
+}
+
+/* 5 MATERIALS: ring left, finish picker right */
+.materials .stage {
+  align-items: flex-end;
+  justify-content: center;
+}
+.materials-copy {
+  width: min(460px, 100%);
+}
+.materials-copy h2 {
+  font-size: clamp(2rem, 4.2vw, 3.8rem);
+  margin-bottom: 0.3em;
+}
+.finishes {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 1.2em 0 0.8em;
+}
+.finish {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 18px 10px 12px;
+  background: var(--deep);
+  color: var(--bone);
+  border: 1.5px solid transparent;
+  border-radius: 999px;
+  font: 600 0.95rem/1 var(--sans);
+  cursor: pointer;
+  transition: border-color 0.4s var(--e-power4-out), background 0.4s var(--e-power4-out);
+}
+.finish[aria-checked='true'] {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 14%, var(--deep));
+}
+.swatch {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1.5px var(--mist);
+}
+.swatch--silver {
+  background: var(--bone);
+}
+.swatch--graphite {
+  background: var(--deep);
+}
+.swatch--gold {
+  background: var(--warm);
+}
+.finish-copy {
+  min-height: 3.2em;
+  color: var(--bone);
+}
+.finish-glyph {
+  width: min(52vw, 280px);
+  margin: 20px 0 0;
+}
+
+/* 6 HOW IT WORKS: a quiet timeline */
+.how .stage {
+  justify-content: center;
+}
+.how-inner {
+  background: color-mix(in srgb, var(--deep) 84%, transparent);
+  max-width: min(960px, 100%);
+}
+.how-inner h2 {
+  font-size: clamp(1.8rem, 3.6vw, 3.2rem);
+  margin-bottom: 0.8em;
+}
+.track {
+  height: 2px;
+  background: color-mix(in srgb, var(--mist) 35%, transparent);
+  margin-bottom: 1.4em;
+}
+.track-fill {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+  transform-origin: left center;
+}
+.steps {
+  list-style: none;
+  margin: 0 0 1.6em;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(16px, 3vw, 40px);
+}
+.step p {
+  margin: 0.3em 0 0;
+  font-size: 0.95rem;
+}
+.step-n {
+  display: block;
+  font-family: var(--serif);
+  font-size: 2.4rem;
+  color: var(--accent);
+  line-height: 1;
+  margin-bottom: 0.2em;
+}
+
+/* 7 WAITLIST: ring settles at the top, form below */
+.waitlist .stage {
+  justify-content: flex-end;
+  align-items: center;
+  text-align: center;
+}
+.waitlist-copy {
+  width: min(620px, 100%);
+}
+.waitlist-copy h2 {
+  font-size: clamp(2rem, 4.6vw, 4rem);
+  margin-bottom: 0.3em;
+}
+.waitlist .lede {
+  margin-left: auto;
+  margin-right: auto;
+}
+.wl-form {
+  text-align: left;
+  margin-top: 1.2em;
+}
+.wl-form label {
+  display: block;
+  font-weight: 600;
+  color: var(--bone);
+  margin-bottom: 8px;
+}
+.wl-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.wl-row input {
+  flex: 1 1 240px;
+  min-width: 0;
+  padding: 14px 18px;
+  border-radius: 999px;
+  border: 1.5px solid var(--mist);
+  background: var(--deep);
+  color: var(--bone);
+  font: 400 1rem/1.2 var(--sans);
+}
+.wl-row input[aria-invalid='true'] {
+  border-color: var(--warm);
+}
+.err {
+  color: var(--warm);
+  min-height: 1.4em;
+  margin: 6px 0 0;
+}
+.status {
+  color: var(--bone);
+  min-height: 1.4em;
+  margin: 4px 0 8px;
+}
+
+/* 8 FOOTER */
+.footer {
+  background: var(--ink);
+  padding: clamp(40px, 8vh, 96px) var(--pad) 32px;
+  border-top: 1px solid color-mix(in srgb, var(--mist) 25%, transparent);
+}
+.footer-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+  align-items: flex-end;
+}
+.footer-mark {
+  font-size: clamp(2.4rem, 8vw, 6rem);
+  letter-spacing: 0.1em;
+  color: var(--bone);
+  margin: 0;
+}
+.footer ul {
+  list-style: none;
+  display: flex;
+  gap: 22px;
+  margin: 0;
+  padding: 0;
+  flex-wrap: wrap;
+}
+.privacy {
+  max-width: 62ch;
+  margin: 48px 0 32px;
+}
+.privacy h2 {
+  font-size: 1.6rem;
+  margin-bottom: 0.4em;
+}
+.privacy p {
+  font-size: 0.95rem;
+}
+.footer-base {
+  display: grid;
+  gap: 2px;
+  font-size: 0.8125rem;
+}
+.footer-base p {
+  margin: 0;
+}
+
+/* custom cursor: fine pointers only, one active state */
+.cursor {
+  display: none;
+}
+html.fine-pointer .cursor {
+  display: block;
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 200;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 1.5px solid var(--bone);
+  pointer-events: none;
+  transition: width 0.5s var(--e-expo-out), height 0.5s var(--e-expo-out), background 0.3s var(--e-power4-out);
+}
+html.fine-pointer .cursor.is-active {
+  width: 56px;
+  height: 56px;
+  background: color-mix(in srgb, var(--accent) 22%, transparent);
+  border-color: var(--accent);
+}
+
+/* narrow screens: ring lives in the top ~45%, copy sits below it */
+@media (max-width: 899px) {
+  .steps {
+    grid-template-columns: 1fr;
+  }
+  .poster svg {
+    margin-left: 0;
+    margin-top: -26vh;
+    width: min(70vw, 340px);
+  }
+  .problem .stage,
+  .how .stage,
+  .science .stage,
+  .materials .stage {
+    justify-content: flex-end;
+    align-items: stretch;
+  }
+  .problem-lines {
+    max-width: none;
+  }
+  .big {
+    font-size: clamp(1.5rem, 7vw, 2.4rem);
+  }
+  .a-intro {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+  .label {
+    font-size: 0.8125rem;
+    padding: 8px 12px;
+  }
+  .science-copy,
+  .how-inner {
+    padding: 14px;
+  }
+  .how-inner h2 {
+    font-size: 1.6rem;
+    margin-bottom: 0.4em;
+  }
+  .step p {
+    font-size: 0.875rem;
+  }
+  .step-n {
+    display: none;
+  }
+  html[data-pin] .steps {
+    gap: 10px;
+  }
+}
+
+/* reduced motion: static poster hero, stacked sections, everything readable */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .w > span {
+    animation: none;
+  }
+  .btn,
+  .finish,
+  .poster {
+    transition: none;
+  }
+  .poster.is-parallax svg {
+    transform: none;
+  }
+}

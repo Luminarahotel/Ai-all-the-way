@@ -1,0 +1,9 @@
+node_modules
+dist
+dist-mock
+test-results
+playwright-report
+public/fonts/*.woff2
+public/gpu-benchmarks
+.env
+.env.local

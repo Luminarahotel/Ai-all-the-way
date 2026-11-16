@@ -1,0 +1,48 @@
+{
+  "name": "lumo-ring",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "engines": { "node": ">=20.19" },
+  "scripts": {
+    "dev": "vite",
+    "typecheck": "tsc --noEmit",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview --port 4173 --strictPort",
+    "postinstall": "node scripts/assets.mjs",
+    "assets": "node scripts/assets.mjs",
+    "pin": "node scripts/pin.mjs",
+    "check:placeholders": "node scripts/check-placeholders.mjs",
+    "check:size": "node scripts/check-size.mjs",
+    "test:install": "playwright install chromium",
+    "test:gates": "playwright test",
+    "lighthouse": "node scripts/lighthouse.mjs",
+    "report": "node scripts/report.mjs",
+    "verify": "npm run typecheck && npm run build && npm run check:placeholders && npm run check:size && npm run test:gates && npm run report"
+  },
+  "dependencies": {
+    "@react-three/fiber": "^9",
+    "gsap": "latest",
+    "lenis": "latest",
+    "react": "^19",
+    "react-dom": "^19",
+    "three": "latest",
+    "detect-gpu": "latest"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "latest",
+    "@fontsource-variable/hanken-grotesk": "latest",
+    "@fontsource/instrument-serif": "latest",
+    "@playwright/test": "latest",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@types/three": "latest",
+    "@vitejs/plugin-react": "latest",
+    "chrome-launcher": "latest",
+    "lighthouse": "latest",
+    "pngjs": "latest",
+    "@types/pngjs": "latest",
+    "typescript": "latest",
+    "vite": "latest"
+  }
+}
